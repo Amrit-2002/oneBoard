@@ -1,0 +1,14 @@
+{
+  "name": "onedraw",
+  "version": "1.0.0",
+  "description": "\"Collaborative drawing webapp\"",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ayush Raj",
+  "license": "ISC",
+  "dependencies": {
+    "ws": "^8.18.0"
+  }
+}
