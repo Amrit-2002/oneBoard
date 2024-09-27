@@ -146,6 +146,8 @@
     let penColor = "#0096ff"; // Default pen color
 
     var drawings = []; // Array to store all drawings
+    let undoneDrawings = [];
+
     // let currentDrawing = []; // Array to store current drawing
 
     // Set canvas size to full window
@@ -221,6 +223,39 @@
     colorPicker.addEventListener("input", (event) => {
       penColor = event.target.value; // Update the pen color to the selected one
     });
+
+  </script>
+
+  <!-- erase feature -->
+  <script>
+    document.getElementById("eraserBtn").addEventListener("click", () => {
+      penColor = "#FFFFFF"; // Set the pen color to white (eraser)
+    });
+
+  </script>
+
+  <!-- undo redo feature -->
+  <script>
+    document.getElementById("undoBtn").addEventListener("click", () => {
+      if (drawings.length > 0) {
+        const undone = drawings.pop(); // Remove the last drawing
+        undoneDrawings.push(undone); // Store it in the undone list
+        redrawCanvas(); // Redraw all drawings without the last one
+      }
+    });
+
+    document.getElementById("redoBtn").addEventListener("click", () => {
+      if (undoneDrawings.length > 0) {
+        const redone = undoneDrawings.pop(); // Take the last undone drawing
+        drawings.push(redone); // Add it back to the drawings list
+        redrawCanvas(); // Redraw all drawings including the redone one
+      }
+    });
+
+    function redrawCanvas() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+      drawings.forEach(drawing => drawing.drawPath()); // Redraw all saved drawings
+    }
 
   </script>
 
