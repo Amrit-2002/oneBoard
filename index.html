@@ -56,10 +56,17 @@
         color: white;
         cursor: pointer;
         font-size: 18px;
+        /* border: 1px solid white; */
+        /* border-radius: 20px; */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition-duration: 0.5s;
       }
 
       .tray button:hover {
         color: #4caf50;
+        scale: 1.4;
       }
 
       .tray button img {
@@ -91,7 +98,7 @@
       aria-label="Toggle dark mode"
       onclick="toggleBackgroundColor()"
     >
-      <i id="theme-icon" class="fas fa-moon"></i>
+      <i id="theme-icon" class=""></i>
     </button>
     <canvas id="drawCanvas"></canvas>
     <!-- <button id="saveBtn">Save Drawing</button>
@@ -210,7 +217,46 @@
       });
     </script>
 
-    <!-- toggle dark-mode: -->
+    <!-- theme based on device-preference: -->
+    <script>
+      if (
+        window.matchMedia &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches
+      ) {
+        const icon = document.getElementById("theme-icon");
+        icon.className = "fas fa-sun";
+        const canvas = document.getElementById("drawCanvas");
+        canvas.style.backgroundColor = "black";
+      }
+      // Function to handle color scheme changes
+      function handleColorSchemeChange(event) {
+        const newColorScheme = event.matches ? "dark" : "light";
+        console.log("Color scheme changed to:", newColorScheme);
+
+        const canvas = document.getElementById("drawCanvas");
+        canvas.style.backgroundColor =
+          newColorScheme === "dark" ? "black" : "white";
+
+        const icon = document.getElementById("theme-icon");
+        // Change icon based on color scheme
+        icon.className =
+          newColorScheme === "dark" ? "fas fa-sun" : "fas fa-moon";
+      }
+
+      // Add listener for changes in the color scheme preference
+      window
+        .matchMedia("(prefers-color-scheme: dark)")
+        .addEventListener("change", handleColorSchemeChange);
+
+      // Run the color scheme change function initially to set the correct icon
+      document.addEventListener("DOMContentLoaded", function () {
+        const isDarkMode = window.matchMedia(
+          "(prefers-color-scheme: dark)"
+        ).matches;
+        handleColorSchemeChange({ matches: isDarkMode });
+      });
+    </script>
+    <!-- switch theme using user click(toggle dark-mode)s: -->
     <script>
       function toggleBackgroundColor() {
         const canvas = document.getElementById("drawCanvas");
@@ -292,11 +338,11 @@
 
     <!-- color picker -->
     <script>
-      // Create a color picker input element
+      // Create color picker
       const colorPicker = document.createElement("input");
       colorPicker.type = "color";
       colorPicker.value = "#0096ff"; // Default color
-      colorPicker.style.display = "none"; // Hide the input
+      colorPicker.style.display = "none"; // Initially hidden
 
       // Append the color picker to the body
       document.body.appendChild(colorPicker);
@@ -391,15 +437,18 @@
             }
           )
         );
-        const index = drawings.indexOf(foundDrawing, 0);
-        drawings.splice(index, 1);
-        redrawCanvas();
-        ws.send(
-          JSON.stringify({
-            type: "erase",
-            drawingId: foundDrawing.drawingId,
-          })
-        );
+        if (foundDrawing) {
+          const index = drawings.indexOf(foundDrawing, 0);
+          if (index === -1) return;
+          drawings.splice(index, 1);
+          redrawCanvas();
+          ws.send(
+            JSON.stringify({
+              type: "erase",
+              drawingId: foundDrawing.drawingId,
+            })
+          );
+        }
       });
 
       // Function to stop drawing
