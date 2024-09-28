@@ -1,13 +1,7 @@
 const { createServer } = require("http");
 const { WebSocketServer } = require("ws");
-const { readFileSync } = require("fs");
-const path = require("path");
 
 const expressApp = require("./app");
-
-// Read the file synchronously when the server starts
-const indexFile = readFileSync(path.join(__dirname, "index.html"), "utf-8");
-
 
 const server = createServer(expressApp);
 

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Collaborative Drawing Board</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Arial", sans-serif;
+        background-color: #f4f7fc;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      .container {
+        background-color: #ffffff;
+        width: 90%;
+        max-width: 1000px;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        padding: 40px;
+      }
+
+      h1 {
+        font-size: 2.5rem;
+        color: #333;
+        margin-bottom: 20px;
+      }
+
+      p {
+        color: #666;
+        margin-bottom: 40px;
+        font-size: 1.1rem;
+      }
+
+      a {
+        background-color: #0066ff;
+        color: #fff;
+        border: none;
+        padding: 15px 30px;
+        font-size: 1.1rem;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        text-decoration: none;
+      }
+
+      a:hover {
+        background-color: #0052cc;
+      }
+
+      .board-preview {
+        margin: 40px 0;
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+      }
+
+      .preview {
+        background-color: #f9f9f9;
+        width: 200px;
+        height: 150px;
+        border-radius: 12px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #888;
+        font-size: 1.2rem;
+      }
+
+      footer {
+        margin-top: 40px;
+        color: #aaa;
+        font-size: 0.9rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Collaborative Drawing Board</h1>
+      <p>
+        Join your friends and draw together in real time on a shared board.
+        Create, collaborate, and have fun!
+      </p>
+
+      <a href="/board" target="_blank">Start Drawing</a>
+
+      <div class="board-preview">
+        <div class="preview">Board 1</div>
+        <div class="preview">Board 2</div>
+        <div class="preview">Board 3</div>
+      </div>
+
+      <footer>
+        <p>&copy; 2024 oneBoard. All rights reserved.</p>
+      </footer>
+    </div>
+
+
+  </body>
+</html>
