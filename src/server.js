@@ -3,20 +3,13 @@ const { WebSocketServer } = require("ws");
 const { readFileSync } = require("fs");
 const path = require("path");
 
+const expressApp = require("./app");
+
 // Read the file synchronously when the server starts
 const indexFile = readFileSync(path.join(__dirname, "index.html"), "utf-8");
 
-// Create HTTP server
-const server = createServer((req, res) => {
-  if (req.method === "GET" && req.url === "/") {
-    // Serve the index.html file
-    res.writeHead(200, { "Content-Type": "text/html" });
-    res.end(indexFile); // Serve the preloaded file
-  } else {
-    res.writeHead(404, { "Content-Type": "text/plain" });
-    res.end("404 Not Found");
-  }
-});
+
+const server = createServer(expressApp);
 
 // Initialize WebSocket server
 const wss = new WebSocketServer({ server });
