@@ -1,343 +1,469 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Multiple Drawings</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Multiple Drawings</title>
-  <style>
-    body,
-    html {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      overflow: hidden;
-    }
+    <style>
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
+      }
 
-    canvas {
-      display: block;
-    }
+      canvas {
+        display: block;
+      }
 
-    #saveBtn,
-    #loadBtn {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      margin-right: 10px;
-      padding: 10px;
-      background-color: #4caf50;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
+      #saveBtn,
+      #loadBtn {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        margin-right: 10px;
+        padding: 10px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
 
-    #loadBtn {
-      left: 120px;
-    }
+      #loadBtn {
+        left: 120px;
+      }
 
-    .tray {
-      position: absolute;
-      bottom: 10px;
-      left: 10px;
-      display: flex;
-      gap: 10px;
-      background-color: rgba(0, 0, 0, 0.5);
-      padding: 10px;
-      border-radius: 10px;
-    }
+      .tray {
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+        display: flex;
+        gap: 10px;
+        background-color: rgb(0 227 255);
+        padding: 10px;
+        border-radius: 10px;
+      }
 
-    .tray button {
-      background: none;
-      border: none;
-      color: white;
-      cursor: pointer;
-      font-size: 18px;
-    }
+      .tray button {
+        background: none;
+        border: none;
+        color: white;
+        cursor: pointer;
+        font-size: 18px;
+      }
 
-    .tray button:hover {
-      color: #4caf50;
-    }
+      .tray button:hover {
+        color: #4caf50;
+      }
 
-    .tray button img {
-      width: 30px;
-      height: 30px;
-    }
-  </style>
-</head>
+      .tray button img {
+        width: 30px;
+        height: 30px;
+      }
 
-<body>
-  <canvas id="drawCanvas"></canvas>
-  <!-- <button id="saveBtn">Save Drawing</button>
+      /* dark mode button: */
+      .toggle-dark-mode {
+        position: fixed;
+        top: 5px;
+        right: 5px;
+        padding: 5px 10px;
+        font-size: x-large;
+        background-color: rgb(0 227 255);
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        /* display: flex; */
+        /* align-items: center; */
+        transition: background-color 0.3s, color 0.3s;
+      }
+    </style>
+  </head>
+
+  <body>
+    <button
+      class="toggle-dark-mode"
+      aria-label="Toggle dark mode"
+      onclick="toggleBackgroundColor()"
+    >
+      <i id="theme-icon" class="fas fa-moon"></i>
+    </button>
+    <canvas id="drawCanvas"></canvas>
+    <!-- <button id="saveBtn">Save Drawing</button>
     <button id="loadBtn">Load Drawing</button> -->
 
-  <!-- Tool Tray -->
-  <div class="tray">
-    <!-- Color Picker -->
-    <button id="colorBtn">
-      <img src="https://img.icons8.com/color/48/000000/paint-palette.png" alt="Color" />
-    </button>
-    <!-- Eraser -->
-    <button id="eraserBtn">
-      <img src="https://img.icons8.com/ios-glyphs/30/ffffff/eraser.png" alt="Eraser" />
-    </button>
-    <!-- Undo -->
-    <button id="undoBtn">
-      <img src="https://img.icons8.com/ios-glyphs/30/ffffff/undo.png" alt="Undo" />
-    </button>
-    <!-- Redo -->
-    <button id="redoBtn">
-      <img src="https://img.icons8.com/ios-glyphs/30/ffffff/redo.png" alt="Redo" />
-    </button>
-    <!-- Pen Thickness Buttons -->
-    <button id="smallPen" title="Small Pen" onclick="penWidth = 1">•</button>
-    <!-- Small Pen -->
-    <button id="mediumPen" title="Medium Pen" onclick="penWidth = 2">
-      ●
-    </button>
-    <!-- Medium Pen -->
-    <button id="largePen" title="Large Pen" onclick="penWidth = 5">⬤</button>
-    <!-- Large Pen -->
-  </div>
+    <!-- Tool Tray -->
+    <div class="tray">
+      <!-- Color Picker -->
+      <button id="colorBtn">
+        <img
+          src="https://img.icons8.com/color/48/000000/paint-palette.png"
+          alt="Color"
+        />
+      </button>
+      <!-- Eraser -->
+      <button id="eraserBtn">
+        <img
+          src="https://img.icons8.com/ios-glyphs/30/ffffff/eraser.png"
+          alt="Eraser"
+        />
+      </button>
+      <!-- Undo -->
+      <button id="undoBtn">
+        <img
+          src="https://img.icons8.com/ios-glyphs/30/ffffff/undo.png"
+          alt="Undo"
+        />
+      </button>
+      <!-- Redo -->
+      <button id="redoBtn">
+        <img
+          src="https://img.icons8.com/ios-glyphs/30/ffffff/redo.png"
+          alt="Redo"
+        />
+      </button>
+      <!-- Pen Thickness Buttons -->
+      <!-- small thickness pen -->
+      <button
+        id="smallPen"
+        title="Small Pen"
+        onclick="penWidth = 1;isDrawing = true; isErasing = false;activeTool='pen';document.getElementById('drawCanvas').style.cursor = 'crosshair';"
+      >
+        <img
+          src="https://www.svgrepo.com/show/451170/pencil-tip.svg"
+          style="mix-blend-mode: multiply; width: 15px"
+          alt=""
+        />
+      </button>
+      <!-- medium thickness pen -->
+      <button
+        id="mediumPen"
+        title="Medium Pen"
+        onclick="penWidth = 2;isDrawing = true;isErasing = false;activeTool='pen';document.getElementById('drawCanvas').style.cursor = 'crosshair';"
+      >
+        <img
+          src="https://www.svgrepo.com/show/451170/pencil-tip.svg"
+          style="mix-blend-mode: multiply; width: 30px"
+          alt=""
+        />
+      </button>
+      <!-- large thickness pen -->
+      <button
+        id="largePen"
+        title="Large Pen"
+        onclick="penWidth = 5;isDrawing = true;isErasing = false;activeTool='pen';document.getElementById('drawCanvas').style.cursor = 'crosshair';"
+      >
+        <img
+          src="https://www.svgrepo.com/show/451170/pencil-tip.svg"
+          style="mix-blend-mode: multiply; width: 50px"
+          alt=""
+        />
+      </button>
+    </div>
 
-  <!-- WebSocket: -->
-  <script>
-    const ws = new WebSocket("ws://localhost:8080");
+    <!-- WebSocket: -->
+    <script>
+      const ws = new WebSocket("ws://localhost:8080");
 
-    ws.addEventListener("error", (event) => {
-      console.log("WebSocket error: ", event);
-    });
-    ws.addEventListener("close", (event) => {
-      console.log("The connection has been closed successfully.");
-    });
-    ws.addEventListener("open", (event) => {
-      ws.send(JSON.stringify({ message: "Hi I'm new client" }));
-    });
+      ws.addEventListener("error", (event) => {
+        console.log("WebSocket error: ", event);
+      });
+      ws.addEventListener("close", (event) => {
+        console.log("The connection has been closed successfully.");
+      });
+      ws.addEventListener("open", (event) => {
+        ws.send(JSON.stringify({ message: "Hi I'm new client" }));
+      });
 
-    ws.addEventListener("message", async (event) => {
-      const textData = await event.data.text(); // Convert Blob to text
-      const msg = JSON.parse(textData);
-      if (msg.type === "new-drawing") {
-        newDrawing = new Drawing(
+      ws.addEventListener("message", async (event) => {
+        const textData = await event.data.text(); // Convert Blob to text
+        const msg = JSON.parse(textData);
+        if (msg.type === "new-drawing") {
+          newDrawing = new Drawing(
+            ctx,
+            msg.drawing.initialX,
+            msg.drawing.initialY,
+            msg.drawing.drawingId,
+            msg.drawing.lineWidth,
+            msg.drawing.lineColor
+          );
+          drawings.push(newDrawing);
+        } else if (msg.type === "draw") {
+          let drawing = drawings.find(
+            (drawing) => drawing.drawingId === msg.drawingId
+          );
+          drawing.addPoint(msg.coordinates.x, msg.coordinates.y);
+          drawing.drawPath();
+        } else if (msg.type === "erase") {
+          let foundDrawing = drawings.find(
+            (drawing) => drawing.drawingId === msg.drawingId
+          );
+          const index = drawings.indexOf(foundDrawing, 0);
+          drawings.splice(index, 1);
+          redrawCanvas();
+        }
+      });
+    </script>
+
+    <!-- toggle dark-mode: -->
+    <script>
+      function toggleBackgroundColor() {
+        const canvas = document.getElementById("drawCanvas");
+        const icon = document.getElementById("theme-icon");
+        const isDark = canvas.style.backgroundColor === "black";
+
+        canvas.style.backgroundColor = isDark ? "white" : "black";
+        icon.className = isDark ? "fas fa-sun" : "fas fa-moon"; // Change icon
+      }
+    </script>
+    <!-- canvas: -->
+    <script>
+      var canvas = document.getElementById("drawCanvas");
+      var ctx = canvas.getContext("2d");
+      var currentDrawing;
+      let isDrawing = false;
+      var activeTool = "pen";
+      let isErasing = false;
+      var penWidth = 1;
+      let penColor = "#0096ff"; // Default pen color
+      document.getElementById("drawCanvas").style.cursor = "crosshair";
+
+      var drawings = []; // Array to store all drawings
+      let undoneDrawings = [];
+
+      // let currentDrawing = []; // Array to store current drawing
+
+      // Set canvas size to full window
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    </script>
+    <!-- Drawing Class: -->
+    <script>
+      class Drawing {
+        constructor(
           ctx,
-          msg.drawing.initialX,
-          msg.drawing.initialY,
-          msg.drawing.drawingId,
-          msg.drawing.lineWidth,
-          msg.drawing.lineColor
-        );
-        drawings.push(newDrawing);
-      } else if (msg.type === "draw") {
-        let drawing = drawings.find(
-          (drawing) => drawing.drawingId === msg.drawingId
-        );
-        drawing.addPoint(msg.coordinates.x, msg.coordinates.y);
-        drawing.drawPath();
-      }
-    });
-  </script>
-
-  <!-- canvas: -->
-  <script>
-    var canvas = document.getElementById("drawCanvas");
-    var ctx = canvas.getContext("2d");
-    var currentDrawing;
-    let isDrawing = false;
-    var penWidth = 1;
-    let penColor = "#0096ff"; // Default pen color
-
-    var drawings = []; // Array to store all drawings
-    let undoneDrawings = [];
-
-    // let currentDrawing = []; // Array to store current drawing
-
-    // Set canvas size to full window
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  </script>
-  <!-- Drawing Class: -->
-  <script>
-    class Drawing {
-      constructor(
-        ctx,
-        initialX,
-        initialY,
-        drawingId = crypto.randomUUID(),
-        lineWidth = 2,
-        lineColor = "rgba(0, 150, 255, 0.8)"
-      ) {
-        this.ctx = ctx;
-        this.drawingId = drawingId;
-        this.lineWidth = lineWidth;
-        this.lineColor = lineColor;
-        this.path = [{ x: initialX, y: initialY }]; // Store the initial point in the path
-      }
-
-      // Method to add new points to the drawing path
-      addPoint(x, y) {
-        this.path.push({ x, y });
-      }
-
-      // Method to clear the drawing path
-      clearPath() {
-        this.path = [{ x: this.initialX, y: this.initialY }]; // Reset to initial point
-      }
-
-      // Method to draw the path on the canvas
-      drawPath(ctx) {
-        if (this.path.length < 2) return; // If there are fewer than 2 points, don't draw
-
-        this.ctx.beginPath();
-        this.ctx.moveTo(this.path[0].x, this.path[0].y); // Start from the initial point
-
-        // Draw lines between all points in the path
-        for (let i = 1; i < this.path.length; i++) {
-          this.ctx.lineTo(this.path[i].x, this.path[i].y);
+          initialX,
+          initialY,
+          drawingId = crypto.randomUUID(),
+          lineWidth = 2,
+          lineColor = "rgba(0, 150, 255, 0.8)"
+        ) {
+          this.ctx = ctx;
+          this.drawingId = drawingId;
+          this.lineWidth = lineWidth;
+          this.lineColor = lineColor;
+          this.path = [{ x: initialX, y: initialY }]; // Store the initial point in the path
         }
 
-        this.ctx.strokeStyle = this.lineColor;
-        this.ctx.lineWidth = this.lineWidth;
-        this.ctx.stroke();
-        this.ctx.closePath();
+        // Method to add new points to the drawing path
+        addPoint(x, y) {
+          this.path.push({ x, y });
+        }
+
+        // Method to clear the drawing path
+        clearPath() {
+          this.path = [{ x: this.initialX, y: this.initialY }]; // Reset to initial point
+        }
+
+        // Method to draw the path on the canvas
+        drawPath(ctx) {
+          if (this.path.length < 2) return; // If there are fewer than 2 points, don't draw
+
+          this.ctx.beginPath();
+          this.ctx.moveTo(this.path[0].x, this.path[0].y); // Start from the initial point
+
+          // Draw lines between all points in the path
+          for (let i = 1; i < this.path.length; i++) {
+            this.ctx.lineTo(this.path[i].x, this.path[i].y);
+          }
+
+          this.ctx.strokeStyle = this.lineColor;
+          this.ctx.lineWidth = this.lineWidth;
+          this.ctx.stroke();
+          this.ctx.closePath();
+        }
       }
-    }
-  </script>
+    </script>
 
-  <!-- color picker -->
-  <script>
-    // Create a color picker input element
-    const colorPicker = document.createElement("input");
-    colorPicker.type = "color";
-    colorPicker.value = "#0096ff"; // Default color
-    colorPicker.style.display = "none"; // Hide the input
+    <!-- color picker -->
+    <script>
+      // Create a color picker input element
+      const colorPicker = document.createElement("input");
+      colorPicker.type = "color";
+      colorPicker.value = "#0096ff"; // Default color
+      colorPicker.style.display = "none"; // Hide the input
 
-    // Append the color picker to the body
-    document.body.appendChild(colorPicker);
+      // Append the color picker to the body
+      document.body.appendChild(colorPicker);
 
+      // Show the color picker dialog when the button is clicked
+      document.getElementById("colorBtn").addEventListener("click", () => {
+        colorPicker.click(); // Open the color picker
+      });
 
-    // Show the color picker dialog when the button is clicked
-    document.getElementById("colorBtn").addEventListener("click", () => {
-      colorPicker.click(); // Open the color picker
-    });
+      // Update the pen color when a new color is selected
+      colorPicker.addEventListener("input", (event) => {
+        penColor = event.target.value; // Update the pen color to the selected one
+        document.getElementById("drawCanvas").style.cursor = "crosshair";
+        isDrawing = true;
+        activeTool = "pen";
+        isErasing = false;
+      });
+    </script>
 
-    // Update the pen color when a new color is selected
-    colorPicker.addEventListener("input", (event) => {
-      penColor = event.target.value; // Update the pen color to the selected one
-    });
+    <!-- erase feature -->
+    <script>
+      document.getElementById("eraserBtn").addEventListener("click", () => {
+        // isErasing = true;
+        activeTool = "eraser";
+        document.getElementById("drawCanvas").style.cursor =
+          "url('https://img.icons8.com/ios-glyphs/30/ffffff/eraser.png'), auto";
 
-  </script>
+        // penColor = "#FFFFFF"; // Set the pen color to white (eraser)
+      });
+    </script>
 
-  <!-- erase feature -->
-  <script>
-    document.getElementById("eraserBtn").addEventListener("click", () => {
-      penColor = "#FFFFFF"; // Set the pen color to white (eraser)
-    });
+    <!-- undo redo feature -->
+    <script>
+      document.getElementById("undoBtn").addEventListener("click", () => {
+        if (drawings.length > 0) {
+          const undone = drawings.pop(); // Remove the last drawing
+          undoneDrawings.push(undone); // Store it in the undone list
+          redrawCanvas(); // Redraw all drawings without the last one
+        }
+      });
 
-  </script>
+      document.getElementById("redoBtn").addEventListener("click", () => {
+        if (undoneDrawings.length > 0) {
+          const redone = undoneDrawings.pop(); // Take the last undone drawing
+          drawings.push(redone); // Add it back to the drawings list
+          redrawCanvas(); // Redraw all drawings including the redone one
+        }
+      });
 
-  <!-- undo redo feature -->
-  <script>
-    document.getElementById("undoBtn").addEventListener("click", () => {
-      if (drawings.length > 0) {
-        const undone = drawings.pop(); // Remove the last drawing
-        undoneDrawings.push(undone); // Store it in the undone list
-        redrawCanvas(); // Redraw all drawings without the last one
+      function redrawCanvas() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+        drawings.forEach((drawing) => drawing.drawPath()); // Redraw all saved drawings
       }
-    });
+    </script>
 
-    document.getElementById("redoBtn").addEventListener("click", () => {
-      if (undoneDrawings.length > 0) {
-        const redone = undoneDrawings.pop(); // Take the last undone drawing
-        drawings.push(redone); // Add it back to the drawings list
-        redrawCanvas(); // Redraw all drawings including the redone one
-      }
-    });
+    <script>
+      // Function to start drawing
+      canvas.addEventListener("mousedown", (event) => {
+        // isDrawing = true;
+        // activeTool = "pen";
+        if (activeTool === "pen") {
+          currentDrawing = new Drawing(
+            ctx,
+            event.clientX,
+            event.clientY,
+            undefined,
+            penWidth,
+            penColor
+            // "rgba(0, 150, 255, 0.8)"
+          );
+          drawings.push(currentDrawing);
+          ws.send(
+            JSON.stringify({
+              type: "new-drawing",
+              drawing: currentDrawing,
+            })
+          );
+        }
+      });
 
-    function redrawCanvas() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
-      drawings.forEach(drawing => drawing.drawPath()); // Redraw all saved drawings
-    }
+      canvas.addEventListener("click", (event) => {
+        if (activeTool !== "eraser") return;
+        let foundDrawing = drawings.find((drawing) =>
+          drawing.path.some(
+            // (point) => point.x === event.clientX && point.y === event.clientY
+            (point) => {
+              const distance = Math.sqrt(
+                Math.pow(point.x - event.clientX, 2) +
+                  Math.pow(point.y - event.clientY, 2)
+              );
+              return distance <= 20; // search for the point within 7px radius
+            }
+          )
+        );
+        const index = drawings.indexOf(foundDrawing, 0);
+        drawings.splice(index, 1);
+        redrawCanvas();
+        ws.send(
+          JSON.stringify({
+            type: "erase",
+            drawingId: foundDrawing.drawingId,
+          })
+        );
+      });
 
-  </script>
+      // Function to stop drawing
+      canvas.addEventListener("mouseup", () => {
+        // if (isDrawing) {
+        //   isDrawing = false;
+        //   currentDrawing = null;
+        // }
 
-  <script>
-    // Function to start drawing
-    canvas.addEventListener("mousedown", (event) => {
-      isDrawing = true;
-      currentDrawing = new Drawing(
-        ctx,
-        event.clientX,
-        event.clientY,
-        undefined,
-        penWidth,
-        penColor
-        // "rgba(0, 150, 255, 0.8)"
-      );
-      drawings.push(currentDrawing);
-      ws.send(
-        JSON.stringify({
-          type: "new-drawing",
-          drawing: currentDrawing,
-        })
-      );
-    });
+        if (activeTool === "pen") {
+          // activeTool = null;
+          currentDrawing = null;
+        }
+      });
 
-    // Function to stop drawing
-    canvas.addEventListener("mouseup", () => {
-      if (isDrawing) {
-        isDrawing = false;
-        currentDrawing = null;
-      }
-    });
+      // Function to capture mouse movements and store points
+      canvas.addEventListener("mousemove", (event) => {
+        // if (!isDrawing) return;
+        if (activeTool !== "pen") return;
+        currentDrawing.addPoint(event.clientX, event.clientY);
+        ws.send(
+          JSON.stringify({
+            type: "draw",
+            drawingId: currentDrawing.drawingId,
+            coordinates: { x: event.clientX, y: event.clientY },
+          })
+        );
+        currentDrawing.drawPath();
+      });
 
-    // Function to capture mouse movements and store points
-    canvas.addEventListener("mousemove", (event) => {
-      if (!isDrawing) return;
-      currentDrawing.addPoint(event.clientX, event.clientY);
-      ws.send(
-        JSON.stringify({
-          type: "draw",
-          drawingId: currentDrawing.drawingId,
-          coordinates: { x: event.clientX, y: event.clientY },
-        })
-      );
-      currentDrawing.drawPath();
-    });
+      // Function to save drawings (as JSON data)
+      document.getElementById("saveBtn").addEventListener("click", () => {
+        const data = JSON.stringify(drawings);
+        downloadJSON(data, "drawings.json");
+      });
 
-    // Function to save drawings (as JSON data)
-    document.getElementById("saveBtn").addEventListener("click", () => {
-      const data = JSON.stringify(drawings);
-      downloadJSON(data, "drawings.json");
-    });
-
-    // Function to load drawings
-    document.getElementById("loadBtn").addEventListener("click", () => {
-      const input = document.createElement("input");
-      input.type = "file";
-      input.accept = ".json";
-      input.onchange = (e) => {
-        const file = e.target.files[0];
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          drawings = JSON.parse(event.target.result);
-          drawAll(); // Redraw all loaded drawings
+      // Function to load drawings
+      document.getElementById("loadBtn").addEventListener("click", () => {
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = ".json";
+        input.onchange = (e) => {
+          const file = e.target.files[0];
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            drawings = JSON.parse(event.target.result);
+            drawAll(); // Redraw all loaded drawings
+          };
+          reader.readAsText(file);
         };
-        reader.readAsText(file);
-      };
-      input.click();
-    });
+        input.click();
+      });
 
-    // Function to download JSON data as a file
-    function downloadJSON(data, filename) {
-      const blob = new Blob([data], { type: "application/json" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-    }
-  </script>
-</body>
-
+      // Function to download JSON data as a file
+      function downloadJSON(data, filename) {
+        const blob = new Blob([data], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }
+    </script>
+  </body>
 </html>
