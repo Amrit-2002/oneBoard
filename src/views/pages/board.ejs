@@ -89,10 +89,45 @@
         /* align-items: center; */
         transition: background-color 0.3s, color 0.3s;
       }
+      .board-branding {
+        display: flex;
+        padding: 5px 10px;
+        position: fixed;
+        top: 10px;
+        left: 20px;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        border: 1px solid #00e3ff;
+        border-radius: 7px;
+        background-color: #00e3ff;
+      }
+      #board-name {
+        outline: none;
+        font-weight: bolder;
+        color: #2e2b2b;
+        border: #00e3ff;
+        background-color: #00e3ff;
+        transition-duration: 0.3s;
+      }
+      #board-name:hover {
+        border: 1px solid rgb(41, 41, 41);
+      }
     </style>
   </head>
 
   <body>
+    <div class="board-branding">
+      <span style="color: red; font-weight: bolder; font-size: x-large"
+        >oneBoard</span
+      >
+      <input
+        type="text"
+        name="board-name"
+        id="board-name"
+        value="my-new-drawing"
+      />
+    </div>
     <button
       class="toggle-dark-mode"
       aria-label="Toggle dark mode"
