@@ -7,7 +7,7 @@
     "start": "node ./src/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Ayush Raj",
+  "author": "Amrit Kumar Maurya",
   "license": "ISC",
   "dependencies": {
     "ejs": "^3.1.10",
